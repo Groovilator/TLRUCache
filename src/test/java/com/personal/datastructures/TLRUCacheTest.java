@@ -69,4 +69,34 @@ public class TLRUCacheTest
 
         Assert.assertEquals(testCache.toString(), "[3][2]");
     }
+
+    public void testUpdateOfNonexistantKey()
+    {
+        try
+        {
+            testCache.push("string1", "1");
+            testCache.push("string2", "2");
+            testCache.push("string3", "3");
+            testCache.update("string4", "4");
+
+            fail("IllegalArgumentException expected");
+        } catch(IllegalArgumentException e) {
+            assertEquals("Key not present in cache, try TLRUCache.push()", e.getMessage());
+        }
+    }
+
+    public void testPushOfExistingKey()
+    {
+        try
+        {
+            testCache.push("string1", "1");
+            testCache.push("string2", "2");
+            testCache.push("string3", "3");
+            testCache.push("string1", "4");
+
+            fail("IllegalArgumentException expected");
+        } catch(IllegalArgumentException e) {
+            assertEquals("Key already present in cache, try TLRUCache.update()", e.getMessage());
+        }
+    }
 }

@@ -37,6 +37,12 @@ public class TLRUCache<K, V>
 	*/
     public void push(K key, V value)
     {
+    	// Key already present in cache, throw exception
+    	if(cache.containsKey(key))
+    	{
+    		throw new java.lang.IllegalArgumentException("Key already present in cache, try TLRUCache.update()");
+    	}
+
         Node<K, V> newNode = new Node<K, V>(key, value, null, null);
 
         // Empty cache, set new node as head/tail
@@ -61,6 +67,12 @@ public class TLRUCache<K, V>
 	*/
     public void update(K key, V value)
     {
+    	// Key not present in cache, throw exception
+    	if(!cache.containsKey(key))
+    	{
+    		throw new java.lang.IllegalArgumentException("Key not present in cache, try TLRUCache.push()");
+    	}
+
 		Node node = cache.get(key);
 
 		// Remove element from current position
