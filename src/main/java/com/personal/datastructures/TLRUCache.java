@@ -22,12 +22,14 @@ public class TLRUCache<K, V>
 		}
 	}
 
+	private int size;
 	private Node head;
 	private Node tail;
 	private HashMap<K, Node> cache;
 
 	public TLRUCache()
 	{
+		this.size = 0;
 		this.head = null;
 		this.tail = null;
 		this.cache = new HashMap<K, Node>();
@@ -61,6 +63,7 @@ public class TLRUCache<K, V>
 
    		// Added key/node to the cache
    		this.cache.put(key, newNode);
+   		this.size++;
     }
 
     /** Update HashMap and move Node to head
@@ -117,6 +120,41 @@ public class TLRUCache<K, V>
 	    	prevNode.next = null;
 	    	this.tail = prevNode;
     	}
+
+    	this.size--;
+    }
+
+    /** Get the oldest key without affecting cache state
+	*/
+    public <K> K peek()
+    {
+    	// Empty cache
+    	if(this.tail == null)
+    	{
+    		return null;
+    	}
+
+    	Node node = this.tail;
+    	return (K)node.key;
+    }
+
+    /** Way to access cache by key
+    */
+    public <V> V get(K key)
+    {
+    	if (!cache.containsKey(key))
+    	{
+    		return null;
+    	}
+    	Node node = this.cache.get(key);
+    	return (V)node.value;
+    }
+
+    /** Utility function to retrieve cache size
+	*/
+    public int size()
+    {
+    	return this.size;
     }
 
     /** toString method to aid in testing

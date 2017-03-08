@@ -48,6 +48,22 @@ public class TLRUCacheTest
         Assert.assertEquals(testCache.toString(), "[3][2][1]");
     }
 
+    // Test that exception is thrown if a key is already present in cache when pushed
+    public void testPushOfExistingKey()
+    {
+        try
+        {
+            testCache.push("string1", "1");
+            testCache.push("string2", "2");
+            testCache.push("string3", "3");
+            testCache.push("string1", "4");
+
+            fail("IllegalArgumentException expected");
+        } catch(IllegalArgumentException e) {
+            assertEquals("Key already present in cache, try TLRUCache.update()", e.getMessage());
+        }
+    }
+
     // Test that updating an entry will bring it to the front of the cache
     public void testUpdate()
     {
@@ -59,17 +75,7 @@ public class TLRUCacheTest
         Assert.assertEquals(testCache.toString(), "[2][3][1]");
     }
 
-    // Test that popping removes the eldest entry
-    public void testPop()
-    {
-        testCache.push("string1", "1");
-        testCache.push("string2", "2");
-        testCache.push("string3", "3");
-        testCache.pop();
-
-        Assert.assertEquals(testCache.toString(), "[3][2]");
-    }
-
+    // Test that exception is thrown when attempting to update a key that isn't present in the cache
     public void testUpdateOfNonexistantKey()
     {
         try
@@ -85,18 +91,61 @@ public class TLRUCacheTest
         }
     }
 
-    public void testPushOfExistingKey()
+    // Test that popping removes the eldest entry
+    public void testPop()
     {
-        try
-        {
-            testCache.push("string1", "1");
-            testCache.push("string2", "2");
-            testCache.push("string3", "3");
-            testCache.push("string1", "4");
+        testCache.push("string1", "1");
+        testCache.push("string2", "2");
+        testCache.push("string3", "3");
+        testCache.pop();
 
-            fail("IllegalArgumentException expected");
-        } catch(IllegalArgumentException e) {
-            assertEquals("Key already present in cache, try TLRUCache.update()", e.getMessage());
-        }
+        Assert.assertEquals(testCache.toString(), "[3][2]");
+    }
+
+    // Test that peek returns the key to the oldest entry
+    public void testPeek()
+    {
+        testCache.push("string1", "1");
+        testCache.push("string2", "2");
+        testCache.push("string3", "3");
+
+        Assert.assertEquals(testCache.peek(), "string1");
+    }
+
+    // Test that peek returns null for an empty cache
+    public void testPeekEmpty()
+    {
+        Assert.assertEquals(testCache.peek(), null);
+    }
+
+    // Test that get returns the correct value for the given key
+    public void testGet()
+    {
+        testCache.push("string1", "1");
+        testCache.push("string2", "2");
+        testCache.push("string3", "3");
+
+        Assert.assertEquals(testCache.get("string2"), "2");
+    }
+
+    // Test that get returns null for a key that is not in the cache
+    public void testGetNonexistant()
+    {
+        testCache.push("string1", "1");
+        testCache.push("string2", "2");
+        testCache.push("string3", "3");
+
+        Assert.assertEquals(testCache.get("string4"), null);
+    }
+
+    // Test that size returns the correct value for a populated array
+    public void testSize()
+    {
+        testCache.push("string1", "1");
+        testCache.push("string2", "2");
+        testCache.push("string3", "3");
+        testCache.pop();
+
+        Assert.assertEquals(testCache.size(), 2);
     }
 }
