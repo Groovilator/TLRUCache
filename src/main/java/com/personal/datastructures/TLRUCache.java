@@ -61,7 +61,22 @@ public class TLRUCache<K, V>
 	*/
     public void update(K key, V value)
     {
-    	return;
+		Node node = cache.get(key);
+
+		// Remove element from current position
+		Node prevNode = node.previous;
+		Node nextNode = node.next;
+		prevNode.next = nextNode;
+		nextNode.previous = prevNode;
+
+		// Move element to head
+		this.head.previous = node;
+		node.next = this.head;
+		node.previous = null;
+		this.head = node;
+
+		// Update cache with updated node
+		this.cache.put(key, node);
     }
 
     /** Remove tail (eldest) node from cache and de-link
