@@ -83,7 +83,28 @@ public class TLRUCache<K, V>
 	*/
     public void pop()
     {
-    	return;
+    	// Empty cache
+    	if(this.tail == null)
+    	{
+    		return;
+    	}
+
+    	// Remove from cache
+    	this.cache.remove(this.tail.key);
+
+    	// Cache with only one element, de-link tail
+    	if(this.tail.previous == null)
+    	{
+    		this.head = null;
+    		this.tail = null;
+    	}
+    	// De-link tail and set new tail
+    	else
+    	{
+	    	Node prevNode = this.tail.previous;
+	    	prevNode.next = null;
+	    	this.tail = prevNode;
+    	}
     }
 
     /** toString method to aid in testing
