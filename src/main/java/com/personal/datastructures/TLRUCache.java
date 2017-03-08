@@ -2,10 +2,12 @@ package com.personal.datastructures;
 
 import java.util.HashMap;
 
-/**
+/** LRU Cache
  */
 public class TLRUCache<K, V>
 {
+	/** Doubly-linked node
+	*/
 	private class Node<K, V>
 	{
 		public K key;
